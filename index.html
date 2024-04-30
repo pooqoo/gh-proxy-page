@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub 加速</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+        h2 {
+            margin: 20px 0;
+            color: #333;
+        }
+        input[type="text"], button, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #6e8efb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #88d3ce;
+        }
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+        .feedback {
+            color: #28a745;
+            margin-top: 10px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>GitHub Proxy</h2>
+        <p>GitHub File, Releases, archive, gist, api, raw.githubusercontent.com 等加速.</p>
+        <input type="text" id="githubLink" placeholder="输入 GitHub 文件链接" pattern="^((https|http):\/\/)?(api\.github\.com|github\.com\/.+?\/.+?\/(?:releases|archive|blob|raw|suites)|((?:raw|gist)\.(?:githubusercontent|github)\.com))\/.+$" required>
+        <button onclick="validateInput(openLink)">下载</button>
+        <button onclick="validateInput(processLink)">生成链接</button>
+        <textarea id="resultLink" placeholder="生成的链接将显示在这里" readonly></textarea>
+        <button onclick="copyToClipboard()">一键复制</button>
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <script>
+        const regex = /^((https|http):\/\/)?(api\.github\.com|github\.com\/.+?\/.+?\/(?:releases|archive|blob|raw|suites)|((?:raw|gist)\.(?:githubusercontent|github)\.com))\/.+$/;
+
+        function validateInput(action) {
+            const githubLink = document.getElementById('githubLink').value.trim();
+            if (regex.test(githubLink)) {
+                action(githubLink);
+            } else {
+                document.getElementById('feedback').textContent = '请输入有效的GitHub链接';
+                setTimeout(() => {
+                    document.getElementById('feedback').textContent = '';
+                }, 3000);
+            }
+        }
+
+        function processLink(githubLink) {
+            const baseUrl = window.location.origin;
+            const resultLink = baseUrl + "/" + githubLink;
+            document.getElementById('resultLink').value = resultLink;
+        }
+
+        function openLink(githubLink) {
+            const baseUrl = window.location.origin;
+            window.open(baseUrl + "/" + githubLink, '_blank');
+        }
+
+        function copyToClipboard() {
+            const resultLink = document.getElementById('resultLink');
+            resultLink.select();
+            document.execCommand('copy');
+            document.getElementById('feedback').textContent = '链接已复制到剪贴板';
+            setTimeout(() => {
+                document.getElementById('feedback').textContent = '';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
